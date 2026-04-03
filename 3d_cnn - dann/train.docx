@@ -1,0 +1,80 @@
+(rppg38) C:\Users\DSP523>python C:\chou\Deap_eeg\3d_cnn\train.py
+Loaded X: (76800, 1, 7, 5, 128) y: (76800,)
+Train: (53760, 1, 7, 5, 128) Test: (23040, 1, 7, 5, 128)
+[Epoch 001/50] Train: loss=0.6876 acc=0.5511 | Test: loss=0.6833 acc=0.5540
+  -> New best model saved (acc=0.5540)
+[Epoch 002/50] Train: loss=0.6819 acc=0.5575 | Test: loss=0.6807 acc=0.5559
+  -> New best model saved (acc=0.5559)
+[Epoch 003/50] Train: loss=0.6790 acc=0.5583 | Test: loss=0.6860 acc=0.5602
+  -> New best model saved (acc=0.5602)
+[Epoch 004/50] Train: loss=0.6756 acc=0.5643 | Test: loss=0.6825 acc=0.5589
+[Epoch 005/50] Train: loss=0.6713 acc=0.5707 | Test: loss=0.6668 acc=0.5701
+  -> New best model saved (acc=0.5701)
+[Epoch 006/50] Train: loss=0.6678 acc=0.5802 | Test: loss=0.6636 acc=0.5734
+  -> New best model saved (acc=0.5734)
+[Epoch 007/50] Train: loss=0.6597 acc=0.5948 | Test: loss=0.6706 acc=0.5745
+  -> New best model saved (acc=0.5745)
+[Epoch 008/50] Train: loss=0.6473 acc=0.6142 | Test: loss=0.6519 acc=0.6162
+  -> New best model saved (acc=0.6162)
+[Epoch 009/50] Train: loss=0.6216 acc=0.6468 | Test: loss=0.6146 acc=0.6498
+  -> New best model saved (acc=0.6498)
+[Epoch 010/50] Train: loss=0.5782 acc=0.6902 | Test: loss=0.5824 acc=0.6825
+  -> New best model saved (acc=0.6825)
+[Epoch 011/50] Train: loss=0.5235 acc=0.7370 | Test: loss=0.5056 acc=0.7494
+  -> New best model saved (acc=0.7494)
+[Epoch 012/50] Train: loss=0.4656 acc=0.7794 | Test: loss=0.5679 acc=0.6839
+[Epoch 013/50] Train: loss=0.4131 acc=0.8117 | Test: loss=0.4410 acc=0.8027
+  -> New best model saved (acc=0.8027)
+[Epoch 014/50] Train: loss=0.3625 acc=0.8412 | Test: loss=0.3984 acc=0.8153
+  -> New best model saved (acc=0.8153)
+[Epoch 015/50] Train: loss=0.3296 acc=0.8593 | Test: loss=0.3972 acc=0.8215
+  -> New best model saved (acc=0.8215)
+[Epoch 016/50] Train: loss=0.2929 acc=0.8773 | Test: loss=0.3663 acc=0.8370
+  -> New best model saved (acc=0.8370)
+[Epoch 017/50] Train: loss=0.2665 acc=0.8902 | Test: loss=0.6453 acc=0.7742
+[Epoch 018/50] Train: loss=0.2431 acc=0.9012 | Test: loss=0.4042 acc=0.8344
+[Epoch 019/50] Train: loss=0.2170 acc=0.9134 | Test: loss=0.3612 acc=0.8459
+  -> New best model saved (acc=0.8459)
+[Epoch 020/50] Train: loss=0.2023 acc=0.9204 | Test: loss=0.3642 acc=0.8566
+  -> New best model saved (acc=0.8566)
+[Epoch 021/50] Train: loss=0.1943 acc=0.9232 | Test: loss=0.3665 acc=0.8443
+[Epoch 022/50] Train: loss=0.1761 acc=0.9319 | Test: loss=0.3482 acc=0.8679
+  -> New best model saved (acc=0.8679)
+[Epoch 023/50] Train: loss=0.1599 acc=0.9385 | Test: loss=0.3609 acc=0.8546
+[Epoch 024/50] Train: loss=0.1464 acc=0.9440 | Test: loss=0.3691 acc=0.8626
+[Epoch 025/50] Train: loss=0.1324 acc=0.9502 | Test: loss=0.4241 acc=0.8457
+[Epoch 026/50] Train: loss=0.1378 acc=0.9485 | Test: loss=0.4953 acc=0.8122
+[Epoch 027/50] Train: loss=0.1201 acc=0.9559 | Test: loss=0.3489 acc=0.8757
+  -> New best model saved (acc=0.8757)
+[Epoch 028/50] Train: loss=0.1157 acc=0.9569 | Test: loss=0.5335 acc=0.8378
+[Epoch 029/50] Train: loss=0.1041 acc=0.9621 | Test: loss=0.4556 acc=0.8612
+[Epoch 030/50] Train: loss=0.0971 acc=0.9645 | Test: loss=0.4926 acc=0.8383
+[Epoch 031/50] Train: loss=0.1012 acc=0.9623 | Test: loss=0.3495 acc=0.8801
+  -> New best model saved (acc=0.8801)
+[Epoch 032/50] Train: loss=0.0920 acc=0.9666 | Test: loss=0.3653 acc=0.8809
+  -> New best model saved (acc=0.8809)
+[Epoch 033/50] Train: loss=0.0873 acc=0.9688 | Test: loss=0.3868 acc=0.8829
+  -> New best model saved (acc=0.8829)
+[Epoch 034/50] Train: loss=0.0802 acc=0.9708 | Test: loss=0.3857 acc=0.8829
+  -> New best model saved (acc=0.8829)
+[Epoch 035/50] Train: loss=0.0809 acc=0.9716 | Test: loss=0.8198 acc=0.7941
+[Epoch 036/50] Train: loss=0.0745 acc=0.9732 | Test: loss=0.3859 acc=0.8720
+[Epoch 037/50] Train: loss=0.0752 acc=0.9731 | Test: loss=0.4267 acc=0.8776
+[Epoch 038/50] Train: loss=0.0723 acc=0.9743 | Test: loss=0.3451 acc=0.8857
+  -> New best model saved (acc=0.8857)
+[Epoch 039/50] Train: loss=0.0657 acc=0.9766 | Test: loss=0.6553 acc=0.8203
+[Epoch 040/50] Train: loss=0.0704 acc=0.9750 | Test: loss=0.3557 acc=0.8908
+  -> New best model saved (acc=0.8908)
+[Epoch 041/50] Train: loss=0.0616 acc=0.9783 | Test: loss=0.4011 acc=0.8862
+[Epoch 042/50] Train: loss=0.0710 acc=0.9748 | Test: loss=0.5807 acc=0.8262
+[Epoch 043/50] Train: loss=0.0629 acc=0.9773 | Test: loss=1.1294 acc=0.6839
+[Epoch 044/50] Train: loss=0.0576 acc=0.9790 | Test: loss=0.3610 acc=0.8859
+[Epoch 045/50] Train: loss=0.0630 acc=0.9775 | Test: loss=0.4967 acc=0.8395
+[Epoch 046/50] Train: loss=0.0573 acc=0.9798 | Test: loss=1.0276 acc=0.7402
+[Epoch 047/50] Train: loss=0.0531 acc=0.9814 | Test: loss=0.4243 acc=0.8678
+[Epoch 048/50] Train: loss=0.0595 acc=0.9794 | Test: loss=0.4848 acc=0.8753
+[Epoch 049/50] Train: loss=0.0522 acc=0.9825 | Test: loss=0.4300 acc=0.8706
+[Epoch 050/50] Train: loss=0.0602 acc=0.9787 | Test: loss=0.3616 acc=0.8903
+
+Best test acc: 0.8908
+Model saved to: C:\chou\Deap_eeg\eeg_localglobal_best.pth
