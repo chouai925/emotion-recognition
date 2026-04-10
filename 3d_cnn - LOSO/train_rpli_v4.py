@@ -101,7 +101,7 @@ def plot_learning_curves(csv_file, save_dir, target_id):
 # ==========================================
 NPZ_PATH = r"C:\chou\Deap_eeg\3d_cnn - LOSO\deap_eeg_de_topo_v.npz"
 PRPL_MODEL_DIR = r"C:\chou\Deap_eeg\3d_cnn - LOSO\PR-PL-main\savemodel_early" 
-SAVE_DIR = r"C:\chou\Deap_eeg\3d_cnn - LOSO\result_v_exp4_0401"
+SAVE_DIR = r"C:\chou\Deap_eeg\3d_cnn - LOSO\result_v_exp4_0406"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 def train_rpli_for_subject(target_id):
@@ -310,7 +310,7 @@ def train_rpli_for_subject(target_id):
             for d_pred in tgt_local_ds:
                 loss_local_d += loss_fn_domain(d_pred, tgt_d_labels)
                 
-            loss_local_d = loss_local_d / 6.0 # ⚠️ 必須除以 6 取平均，否則權重會暴走
+            loss_local_d = loss_local_d / 8.0 
             
             # 🚀 (F) 終極 Loss 組合
             loss_total = loss_cls + (0.1 * loss_local_cls) + (0.05 * loss_adv) + \

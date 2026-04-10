@@ -1,0 +1,12 @@
+{"time":"2026-04-08T19:07:22.3708368+08:00","level":"INFO","msg":"stream: starting","core version":"0.24.2"}
+{"time":"2026-04-08T19:07:22.6991173+08:00","level":"INFO","msg":"stream: created new stream","id":"tbg4cado"}
+{"time":"2026-04-08T19:07:22.6991173+08:00","level":"INFO","msg":"handler: started","stream_id":"tbg4cado"}
+{"time":"2026-04-08T19:07:22.6991173+08:00","level":"INFO","msg":"stream: started","id":"tbg4cado"}
+{"time":"2026-04-08T19:07:22.6991173+08:00","level":"INFO","msg":"writer: started","stream_id":"tbg4cado"}
+{"time":"2026-04-08T19:07:22.6991173+08:00","level":"INFO","msg":"sender: started","stream_id":"tbg4cado"}
+{"time":"2026-04-08T19:10:35.8692779+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-04-08T19:10:36.1833817+08:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-04-08T19:10:36.187965+08:00","level":"INFO","msg":"stream: closing","id":"tbg4cado"}
+{"time":"2026-04-08T19:10:36.187965+08:00","level":"INFO","msg":"handler: closed","stream_id":"tbg4cado"}
+{"time":"2026-04-08T19:10:36.187965+08:00","level":"INFO","msg":"sender: closed","stream_id":"tbg4cado"}
+{"time":"2026-04-08T19:10:36.187965+08:00","level":"INFO","msg":"stream: closed","id":"tbg4cado"}

@@ -1,0 +1,12 @@
+{"time":"2026-04-09T15:49:53.2857461+08:00","level":"INFO","msg":"stream: starting","core version":"0.24.2"}
+{"time":"2026-04-09T15:49:53.5990175+08:00","level":"INFO","msg":"stream: created new stream","id":"eh90keaf"}
+{"time":"2026-04-09T15:49:53.5992004+08:00","level":"INFO","msg":"handler: started","stream_id":"eh90keaf"}
+{"time":"2026-04-09T15:49:53.5999764+08:00","level":"INFO","msg":"stream: started","id":"eh90keaf"}
+{"time":"2026-04-09T15:49:53.5999764+08:00","level":"INFO","msg":"writer: started","stream_id":"eh90keaf"}
+{"time":"2026-04-09T15:49:53.5999764+08:00","level":"INFO","msg":"sender: started","stream_id":"eh90keaf"}
+{"time":"2026-04-09T15:53:37.2098894+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-04-09T15:53:37.6570187+08:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-04-09T15:53:37.6610003+08:00","level":"INFO","msg":"stream: closing","id":"eh90keaf"}
+{"time":"2026-04-09T15:53:37.6615483+08:00","level":"INFO","msg":"handler: closed","stream_id":"eh90keaf"}
+{"time":"2026-04-09T15:53:37.6615883+08:00","level":"INFO","msg":"sender: closed","stream_id":"eh90keaf"}
+{"time":"2026-04-09T15:53:37.6615883+08:00","level":"INFO","msg":"stream: closed","id":"eh90keaf"}

@@ -66,17 +66,21 @@ class EEGEmotionNetTopoLG3D(nn.Module):
         super().__init__()
         self.local_path = EEG3DCNN(time_len=time_len)
         self.global_path = EEG3DCNN(time_len=time_len)
+        self.diff_path = EEG3DCNN(time_len=time_len)
+
         self.embed_dim = 32
         
         # 1. 局部領域辨識器 (Local DANN，消除受試者差異)
         self.local_d_left = nn.Sequential(nn.Linear(32, 32), nn.ReLU(), nn.Linear(32, 2))
         self.local_d_right = nn.Sequential(nn.Linear(32, 32), nn.ReLU(), nn.Linear(32, 2))
         self.local_d_global = nn.Sequential(nn.Linear(32, 32), nn.ReLU(), nn.Linear(32, 2))
+        self.local_d_diff = nn.Sequential(nn.Linear(32, 32), nn.ReLU(), nn.Linear(32, 2))
 
-        # 🚀 2. 新增：局部情緒分類器 (給特徵穿防彈衣，保留情緒)
+        # 🚀 2. 新增：局部情緒分類器 
         self.local_c_left = nn.Linear(32, 2)
         self.local_c_right = nn.Linear(32, 2)
         self.local_c_global = nn.Linear(32, 2)
+        self.local_c_diff = nn.Linear(32, 2)
 
         self.self_attention = nn.MultiheadAttention(embed_dim=self.embed_dim, num_heads=4, batch_first=True)
         self.layernorm = nn.LayerNorm(self.embed_dim)
@@ -90,9 +94,13 @@ class EEGEmotionNetTopoLG3D(nn.Module):
         x_right = x[:, :, :, 3:5, :]  
         x_global = x                  
 
+        x_right_flipped = torch.flip(x_right, dims=[3])
+        x_diff = torch.abs(x_left - x_right_flipped)
+
         feat_left = self.local_path(x_left)   
         feat_right = self.local_path(x_right) 
-        feat_global = self.global_path(x_global) 
+        feat_global = self.global_path(x_global)
+        feat_diff = self.diff_path(x_diff) 
 
         # 🚀 新增：計算左右腦差異特徵 (Discrepancy)，這對 Valence 至關重要！
         feat_diff = torch.abs(feat_left - feat_right)
@@ -101,11 +109,13 @@ class EEGEmotionNetTopoLG3D(nn.Module):
         d_l = self.local_d_left(ReverseLayerF.apply(feat_left, alpha))
         d_r = self.local_d_right(ReverseLayerF.apply(feat_right, alpha))
         d_g = self.local_d_global(ReverseLayerF.apply(feat_global, alpha))
+        d_diff = self.local_d_diff(ReverseLayerF.apply(feat_diff, alpha))
 
         # (B) 局部情緒預測 (直接預測，不翻轉梯度)
         c_l = self.local_c_left(feat_left)
         c_r = self.local_c_right(feat_right)
         c_g = self.local_c_global(feat_global)
+        c_diff = self.local_c_diff(feat_diff)
 
         # 🚀 (C) 注意力融合 (修改：將 feat_diff 加入拼接序列中)
         feat_seq = torch.stack([feat_left, feat_right, feat_diff, feat_global], dim=1)
@@ -113,8 +123,8 @@ class EEGEmotionNetTopoLG3D(nn.Module):
         feat_seq = self.layernorm(feat_seq + attn_output)
         final_feat = feat_seq.reshape(feat_seq.size(0), -1) 
         
-        # 回傳：最終特徵、領域預測(三個)、情緒預測(三個)
-        return final_feat, (d_l, d_r, d_g), (c_l, c_r, c_g)
+        # 回傳：最終特徵、領域預測、情緒預測
+        return final_feat, (d_l, d_r, d_diff, d_g), (c_l, c_r, c_diff, c_g)
 # ---------------------------
 # 4. 對抗性封裝 (DANN-EEGNet)
 # ---------------------------

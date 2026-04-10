@@ -1,0 +1,12 @@
+{"time":"2026-04-08T14:12:40.5347612+08:00","level":"INFO","msg":"stream: starting","core version":"0.24.2"}
+{"time":"2026-04-08T14:12:40.8621381+08:00","level":"INFO","msg":"stream: created new stream","id":"vreyiioz"}
+{"time":"2026-04-08T14:12:40.8624946+08:00","level":"INFO","msg":"handler: started","stream_id":"vreyiioz"}
+{"time":"2026-04-08T14:12:40.8649111+08:00","level":"INFO","msg":"stream: started","id":"vreyiioz"}
+{"time":"2026-04-08T14:12:40.8649111+08:00","level":"INFO","msg":"writer: started","stream_id":"vreyiioz"}
+{"time":"2026-04-08T14:12:40.8649111+08:00","level":"INFO","msg":"sender: started","stream_id":"vreyiioz"}
+{"time":"2026-04-08T14:16:02.3241421+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-04-08T14:16:02.6624575+08:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-04-08T14:16:02.6735633+08:00","level":"INFO","msg":"stream: closing","id":"vreyiioz"}
+{"time":"2026-04-08T14:16:02.6735633+08:00","level":"INFO","msg":"handler: closed","stream_id":"vreyiioz"}
+{"time":"2026-04-08T14:16:02.6735633+08:00","level":"INFO","msg":"sender: closed","stream_id":"vreyiioz"}
+{"time":"2026-04-08T14:16:02.6735633+08:00","level":"INFO","msg":"stream: closed","id":"vreyiioz"}
