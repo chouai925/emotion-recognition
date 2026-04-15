@@ -129,7 +129,21 @@ class DANNEEGNet(nn.Module):
             nn.ReLU(),
             nn.Linear(64, num_subjects)
         )
+    def forward(self, x, alpha=1.0):
+        feature = self.feature_extractor(x)
+        
+        # 同時輸出回歸與分類結果
+        reg_output = self.reg_classifier(feature)
+        cls_output = self.cls_classifier(feature)
 
+        # 梯度翻轉對抗
+        reverse_feature = ReverseLayerF.apply(feature, alpha)
+        domain_output = self.domain_classifier(reverse_feature)
+
+        # 🚀 關鍵修改：多回傳一個 feature 在最前面
+        return feature, reg_output, cls_output, domain_output
+
+'''
     def forward(self, x, alpha=1.0):
         feature = self.feature_extractor(x)
         
@@ -142,3 +156,4 @@ class DANNEEGNet(nn.Module):
         domain_output = self.domain_classifier(reverse_feature)
 
         return reg_output, cls_output, domain_output
+'''

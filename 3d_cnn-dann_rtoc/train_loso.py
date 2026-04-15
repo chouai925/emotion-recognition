@@ -14,11 +14,14 @@ from dataloader import load_subject_independent_data
 from model_Asymmetry import DANNEEGNet
 from sklearn.metrics import roc_curve, roc_auc_score
 
-WANDB_PROJECT = "EEG-Arousal-Regression-0410_alpha_dynamic"
+import itertools
+import cmmd
+
+WANDB_PROJECT = "EEG-Arousal-Regression-0414_cMMD"
 
 # ===== 參數設定 =====
 NPZ_PATH = r"D:\Deap_eeg\3d_cnn-dann_rtoc\deap_a_minmax.npz"
-OUT_DIR = r"D:\Deap_eeg\3d_cnn-dann_rtoc\Results_LOSO\arousal_0410_alpha_dynamic"
+OUT_DIR = r"D:\Deap_eeg\3d_cnn-dann_rtoc\Results_LOSO\arousal_0414_cMMD"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 128
 EPOCHS = 50
@@ -73,69 +76,88 @@ def train_one_loso_fold(test_sub_id):
         start_epoch = checkpoint['epoch'] + 1
         best_acc = checkpoint['best_acc']
 
+    # 🚀 創建無限循環的 Target DataLoader
+    target_iter = iter(itertools.cycle(test_loader))
+
     for epoch in range(start_epoch, EPOCHS):
         model.train()
         total_loss, total_mse, correct_label, total_samples = 0, 0, 0, 0
-        pbar = tqdm(train_loader, desc=f"{sub_name} Ep {epoch+1}/{EPOCHS}")
+        
+        # 🚀 動態權重設定 (新增 lambda_cmmd)
+        warmup_epochs = 10  
+        start_lambda = 0.1  
+        end_lambda = 2.0    
+
+        if epoch < warmup_epochs:
+            lambda_cls = start_lambda
+            lambda_cmmd = 0.0 # 暖機期：不介入
+        else:
+            progress = (epoch - warmup_epochs) / (EPOCHS - warmup_epochs - 1)
+            lambda_cls = start_lambda + (end_lambda - start_lambda) * progress
+            lambda_cmmd = 0.0 + (1.0 - 0.0) * progress # cMMD 權重最高到 1.0
+
+        pbar = tqdm(train_loader, desc=f"{sub_name} Ep {epoch+1}/{EPOCHS} [λc={lambda_cls:.2f}|λm={lambda_cmmd:.2f}]")
         
         for i, (inputs, labels, subjects) in enumerate(pbar):
+            # ===== 1. 雙軌讀取 =====
             inputs, labels, subjects = inputs.to(DEVICE), labels.to(DEVICE), subjects.to(DEVICE)
             
-            warmup_epochs = 10  # 前 10 個 Epoch 專注回歸
-            start_lambda = 0.1  # 初始分類權重極低
-            end_lambda = 2.0    # 最終分類權重 (讓分類主導)
-
-            if epoch < warmup_epochs:
-                lambda_cls = start_lambda
-            else:
-            # 從第 10 到第 50 個 Epoch，權重從 0.1 線性爬升到 2.0
-                progress = (epoch - warmup_epochs) / (EPOCHS - warmup_epochs - 1)
-                lambda_cls = start_lambda + (end_lambda - start_lambda) * progress
-
-            # 稍微修改進度條標題，讓你一眼看出現在的 lambda 是多少
-            pbar = tqdm(train_loader, desc=f"{sub_name} Ep {epoch+1}/{EPOCHS} [λ={lambda_cls:.2f}]")
+            # 抽出 Target (期末考卷) 資料
+            target_inputs, _, _ = next(target_iter)
+            target_inputs = target_inputs.to(DEVICE)
 
             p = float(i + epoch * len(train_loader)) / (EPOCHS * len(train_loader))
-            # 🚀 修正 1：改為標準的 DANN 公式 (-10 * p)，讓 alpha 平滑且完整地從 0 升到接近 1
             alpha = 2. / (1. + np.exp(-10 * p)) - 1
             
-            reg_outputs, cls_outputs, domain_outputs = model(inputs, alpha=alpha)
+            # ===== 2. Source 前向傳播 =====
+            # 🚀 記得接收 4 個回傳值 (最前面多了 feat_s)
+            feat_s, reg_outputs, cls_outputs, domain_outputs = model(inputs, alpha=alpha)
             
             loss_reg = criterion_reg(reg_outputs.squeeze(), labels.float())
-
-            # 將連續標籤轉為類別標籤 (0 或 1)
             labels_cls = (labels >= 0.5).long()
             loss_cls = criterion_cls(cls_outputs, labels_cls)
-
             loss_domain = criterion_domain(domain_outputs, subjects)
+
+            # ===== 3. Target 前向傳播與 cMMD 計算 =====
+            loss_cmmd = torch.tensor(0.0).to(DEVICE)
             
-            # 🚀 修正 2：拔除 hardcode 的 0.1！
-            # 因為 alpha 已經在 GRL (ReverseLayerF) 裡面作用了，這裡直接相加即可
-            # 總損失：可以調整 lambda_cls 權重
-            #lambda_cls = 1.0
-            #loss = loss_reg + (lambda_cls * loss_cls) + loss_domain
-            loss = loss_reg + (lambda_cls * loss_cls) + loss_domain
+            if lambda_cmmd > 0:
+                # 🚀 讓模型去寫期末考卷
+                feat_t, _, cls_outputs_t, _ = model(target_inputs, alpha=alpha)
+                
+                # 計算機率與偽標籤
+                t_probs = torch.softmax(cls_outputs_t, dim=1)
+                max_probs, pseudo_labels = torch.max(t_probs, dim=1)
+                
+                # 🚀 大絕招：置信度過濾 (大於 0.7 才有資格對齊)
+                conf_threshold = 0.70 
+                mask = max_probs > conf_threshold
+                
+                safe_feat_t = feat_t[mask]
+                safe_pseudo_labels = pseudo_labels[mask]
+                
+                # 如果有成功過濾出高自信資料，才算 cMMD
+                if safe_feat_t.size(0) > 0:
+                    loss_cmmd = cmmd.cmmd(source=feat_s, target=safe_feat_t, s_label=labels_cls, t_label=safe_pseudo_labels, num_classes=2)
+
+            # ===== 4. 終極 Loss 融合 =====
+            loss = loss_reg + (lambda_cls * loss_cls) + loss_domain + (lambda_cmmd * loss_cmmd)
             
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             
-            # 準確率 (迴歸轉分類)
-            # 計算準確率 (使用分類頭的輸出)
+            # 計算準確率與記錄
             pred_class = cls_outputs.argmax(dim=1)
             correct_label += pred_class.eq(labels_cls).sum().item()
-            #pred_class = (reg_outputs.squeeze() >= 0.5).float()
-            #true_class = (labels >= 0.5).float()
-            #correct_label += pred_class.eq(true_class).sum().item()
             total_samples += labels.size(0)
             total_mse += loss_reg.item()
             total_loss += loss.item()
 
-            #pbar.set_postfix({"MSE": f"{loss_reg.item():.4f}", "Acc": f"{100.*correct_label/total_samples:.2f}%"})
-            # 🚀 完整進度條：同時監控回歸 (MSE)、分類 (CE) 與準確率 (Acc)
             pbar.set_postfix({
                 "MSE": f"{loss_reg.item():.4f}", 
                 "CE": f"{loss_cls.item():.4f}", 
+                "cMMD": f"{loss_cmmd.item():.4f}", # 監控 cMMD 數值
                 "Acc": f"{100.*correct_label/total_samples:.2f}%"
             })
 
@@ -154,7 +176,8 @@ def train_one_loso_fold(test_sub_id):
                 inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
                 
                 # 🚀 接收三個輸出
-                reg_outputs, cls_outputs, _ = model(inputs, alpha=0)
+                # 🚀 第一個位置用底線 _ 接住 feature
+                _, reg_outputs, cls_outputs, _ = model(inputs, alpha=0)
                 
                 # 🚀 先計算出分類機率 (提早算，這樣下面才能印)
                 cls_probs = torch.softmax(cls_outputs, dim=1)[:, 1]
