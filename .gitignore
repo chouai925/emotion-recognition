@@ -44,4 +44,14 @@ env/
 # 5. 作業系統自動產生的隱藏檔
 # =========================
 .DS_Store
-Thumbs.db
+Thumbs.db3d_cnn-dann_rtoc/face_frames*/
+3d_cnn-dann_rtoc/frames/
+3d_cnn-dann_rtoc/roi_frames*/
+*.zip
+*.pth
+*.npy
+*.npz
+3d_cnn-dann_rtoc/face_frames/
+3d_cnn-dann_rtoc/face_frames_224/
+3d_cnn-dann_rtoc/face_frames_64/
+3d_cnn-dann_rtoc/ResNet-9-main/
